@@ -10,14 +10,14 @@ so maybe it's actually just something pretending to be a monad. Trust at your ow
 
 Anyway, whether or not it's a good monad, this may be a useful construct.
 
-## API
+# API
 
 > Note: the examples below assume this is published to NPM in a package called `raiser`. It is not.
 > If you actually want to use this library let me know and I'll publish it, but under some other
 > name because `raiser` is taken and honestly not a great name but it's just what I came up with
 > when I was typing it out.
 
-### `Raiser :: TypeRep (Raiser e a)`
+## `Raiser :: TypeRep (Raiser e a)`
 
 ```javascript
 import Raiser from 'raiser';
@@ -27,7 +27,7 @@ This is the core of this whole thing, the Type Representative of the `Raiser` mo
 really not all that special if you are familiar with the `State` monad, and can be understood
 as a specialization like this: `Raiser e a = State [e] a`.
 
-#### `Raiser :: ([e] -> { errors :: [e], value :: a }) -> Raiser e a`
+### `Raiser :: ([e] -> { errors :: [e], value :: a }) -> Raiser e a`
 
 This is the constructor (e.g. `new Raiser`). Not really recommended for use, the underlying
 representation of a `Raiser` is a function that:
@@ -40,44 +40,44 @@ representation of a `Raiser` is a function that:
 By using the operators and do-notation helper as provided, you should be able to avoid this
 constructor easily.
 
-#### `Raiser#['fantasy-land/of'] :: a -> Raiser e a`
+### `Raiser#['fantasy-land/of'] :: a -> Raiser e a`
 
 Produces a `Raiser` that computes the constant value provided, without raising an errors.
 
-#### `Raiser#['fantasy-land/map'] :: Raiser e a ~> (a -> b) -> Raiser e b`
+### `Raiser#['fantasy-land/map'] :: Raiser e a ~> (a -> b) -> Raiser e b`
 
 Maps the value of the `Raiser`, leaving the errors untouched.
 
-#### `Raiser#['fantasy-land/ap'] :: Raiser e a ~> Raiser e (a -> b) -> Raiser e b`
+### `Raiser#['fantasy-land/ap'] :: Raiser e a ~> Raiser e (a -> b) -> Raiser e b`
 
 Applies the function which is contained in another `Raiser` to the value contained in this
 `Raiser`. The errors raised by both will be included in the result.
 
-#### `Raiser#['fantasy-land/chain'] :: Raiser e a ~> (a -> Raiser e b) -> Raiser e b`
+### `Raiser#['fantasy-land/chain'] :: Raiser e a ~> (a -> Raiser e b) -> Raiser e b`
 
 Chains the value of the Raiser, transforming the value while also allowing for new errors
 to be raised.
 
-#### `Raiser#computation :: [e] -> { errors :: [e], value :: a }`
+### `Raiser#computation :: [e] -> { errors :: [e], value :: a }`
 
 Runs a Raiser by calling the underlying function representation that was explained
 with the constructor. As with the constructor, it's not likely you'll want to use this
 directly.
 
-### `Errors`
+## `Errors`
 
 When a Raiser decides to abort its computation, it will do so by throwing an error of type
 `Errors`. This value has a property `errors` which is an array containing all the values
 raised to the `Raiser` that is aborting.
 
-### Consuming `Raisers`
+## Consuming `Raisers`
 
 I would not be surprised if 100% of the time you are dealing with Raisers, you create
 them using `doRaiser` and consume them with one of the three functions `runRaiser`,
 `evaluateRaiser`, or `tryRaiser`. Though you could use the raw class as described above,
 it's really nasty and not a good time.
 
-#### `doRaiser :: Generator (forall b. Raiser e b) a -> Raiser e a`
+### `doRaiser :: Generator (forall b. Raiser e b) a -> Raiser e a`
 
 Builds a `Raiser` from a generator in which `yield` takes the role of `<-`, allowing you
 to yield other `Raisers` and collect their errors naturally. This is fairly similar to
@@ -97,7 +97,7 @@ Some things to keep in mind, as Javascript is not that conducive to the do-notat
 
 [Burrido]: https://github.com/pelotom/burrido
 
-#### `runRaiser :: Raiser e a -> { errors :: [e], value :: a }`
+### `runRaiser :: Raiser e a -> { errors :: [e], value :: a }`
 
 Runs a `Raiser`, returning both the list of raised errors and the resulting value.
 
@@ -112,7 +112,7 @@ const raiser = doRaiser(function* () {
 runRaiser(raiser); // { errors: [Error('bad')], value: 'ok' }
 ```
 
-#### `evaluateRaiser :: Raiser e a -> { errors :: [e], value :: a }`
+### `evaluateRaiser :: Raiser e a -> { errors :: [e], value :: a }`
 
 Runs a `Raiser`, ignoring the raised errors and just returning the resulting value.
 
@@ -127,7 +127,7 @@ const raiser = doRaiser(function* () {
 evaluateRaiser(raiser); // 'ok'
 ```
 
-#### `tryRaiser :: Raiser e a -> { errors :: [e], value :: a }`
+### `tryRaiser :: Raiser e a -> { errors :: [e], value :: a }`
 
 Runs a `Raiser`, aborting *after* completing the computation if any errors were
 raised in the process. Note that this aborts *after* the computation, so the
@@ -144,9 +144,9 @@ const raiser = doRaiser(function* () {
 tryRaiser(raiser); // !throws
 ```
 
-### Working with `Raisers`
+## Working with `Raisers`
 
-#### `raise :: e -> Raiser e ()`
+### `raise :: e -> Raiser e ()`
 
 Raises an error into the Raiser.
 
@@ -162,7 +162,7 @@ const raiser = doRaiser(function* () {
 tryRaiser(raiser); // !throws
 ```
 
-#### `lower :: e -> Raiser e ()`
+### `lower :: e -> Raiser e ()`
 
 The opposite of `raise`, this will un-raise a previously raised error. If such an error was
 not previously raised, nothing will happen.
@@ -180,7 +180,7 @@ const raiser = doRaiser(function* () {
 tryRaiser(raiser); // 'ok'
 ```
 
-#### `inspect :: Raiser e [e]`
+### `inspect :: Raiser e [e]`
 
 Gets the current list of errors. This does not modify that list, just lets you access it,
 maybe so you can look for ones you know how to handle and `lower` them.
@@ -197,7 +197,7 @@ const raiser = doRaiser(function* () {
 runRaiser(raiser); // { errors: ['ok'], value: 'ok' }
 ```
 
-#### `consume :: Raiser e [e]`
+### `consume :: Raiser e [e]`
 
 Gets the current list of errors, and dismisses them all.
 
@@ -213,7 +213,7 @@ const raiser = doRaiser(function* () {
 runRaiser(raiser); // { errors: [], value: 'ok' }
 ```
 
-#### `checkpoint :: Raiser e ()`
+### `checkpoint :: Raiser e ()`
 
 Defines a checkpoint at which, if there are any errors that were previously raised, the computation
 is aborted immediately (by throwing an `Errors` containing everything that was raised).
@@ -233,7 +233,7 @@ const raiser = doRaiser(function* () {
 runRaiser(raiser); // !throws
 ```
 
-#### `tryOr :: a -> Raiser e a -> Raiser e a`
+### `tryOr :: a -> Raiser e a -> Raiser e a`
 
 Attempts to run another `Raiser`, and if that one aborts (due to using `checkpoint`), the abort is
 stopped and the errors are just put back into the raised state. Since in the case of an abort, there
