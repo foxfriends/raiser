@@ -67,7 +67,7 @@ directly.
 ## `Errors`
 
 ```javascript
-import { Errors } from 'raiser'
+import { Errors } from 'raiser';
 ```
 
 When a Raiser decides to abort its computation, it will do so by throwing an error of type
