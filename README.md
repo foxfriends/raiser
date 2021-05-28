@@ -66,6 +66,10 @@ directly.
 
 ## `Errors`
 
+```javascript
+import { Errors } from 'raiser'
+```
+
 When a Raiser decides to abort its computation, it will do so by throwing an error of type
 `Errors`. This value has a property `errors` which is an array containing all the values
 raised to the `Raiser` that is aborting.
