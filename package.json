@@ -1,0 +1,35 @@
+{
+  "name": "raiser",
+  "version": "1.0.0",
+  "description": "Raise multiple errors without throwing",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/foxfriends/raiser.git"
+  },
+  "keywords": [
+    "monad",
+    "functional-programming",
+    "errors",
+    "ramda",
+    "fantasy-land"
+  ],
+  "author": "Cameron Eldridge",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/foxfriends/raiser/issues"
+  },
+  "homepage": "https://github.com/foxfriends/raiser#readme",
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^8.4.0"
+  },
+  "dependencies": {
+    "fantasy-land": "^5.0.0",
+    "ramda": "^0.27.1"
+  }
+}
