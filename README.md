@@ -252,7 +252,7 @@ const raiser = doRaiser(function* () {
     yield raise('another error');
     yield checkpoint;
     return 'Success!';
-  });
+  }));
   return value;
 });
 
